@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use AppBundle\Entity\Score;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DefaultController extends Controller
 {
@@ -17,7 +19,16 @@ class DefaultController extends Controller
     public function indexAction()
     {
         // replace this example code with whatever you need
-        
+        $em = $this->getDoctrine()->getManager();
+
+        $scores = $em->getRepository('AppBundle:Score')->findAll();
+
+        $score = new Score();
+        $score->setIsPresent(true);
+        $score->setScoreDate(new \DateTime);
+        $em->persist($score);
+        $em->flush();
+
         $lang1 = array(
              "langage" => "fetra",
              "fr" => "harinjatovo");
@@ -29,7 +40,7 @@ class DefaultController extends Controller
              "fr" => "harinjatovo");
        
         $techno = array($lang1,$lang2, $lang3);
-        $res = new JsonResponse($techno);
+        $res = new JsonResponse($scores);
         $res->headers->set("Access-Control-Allow-Origin" , "*");
         return $res;
     }
